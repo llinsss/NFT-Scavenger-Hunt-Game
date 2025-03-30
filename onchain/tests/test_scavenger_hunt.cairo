@@ -472,3 +472,15 @@ fn test_multiple_level_progressions() {
     stop_cheat_caller_address(contract_address);
 }
 
+
+// tests/nft_scavenger.cairo
+#[test]
+fn test_puzzle_solution() {
+    let mut state = TestState::setup();
+    let player = test_address(1);
+    
+    // Correct solution to puzzle #1
+    NftScavenger::solve_puzzle(state, player, 1, array![42]);
+    assert(NftScavenger::has_solved(player, 1), 'Puzzle not marked');
+    assert(NftScavenger::owner_of(1) == player, 'NFT not minted');
+}
