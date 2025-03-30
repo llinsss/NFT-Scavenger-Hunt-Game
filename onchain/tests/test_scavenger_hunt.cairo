@@ -484,3 +484,24 @@ fn test_puzzle_solution() {
     assert(NftScavenger::has_solved(player, 1), 'Puzzle not marked');
     assert(NftScavenger::owner_of(1) == player, 'NFT not minted');
 }
+#[test]
+fn test_hint_flow() {
+    let mut state = TestState::setup();
+    let player = test_address(1);
+    
+    // 1. Initialize
+    NftScavenger::init_player(state, player);
+    
+    // 2. Record attempt
+    NftScavenger::record_attempt(state, player, 1);
+    
+    // 3. Request hint (should pass)
+    let hint = NftScavenger::request_hint(state, player, 1);
+    assert(hint.len() > 0, 'No hint returned');
+    
+    // 4. Test failures
+    let player2 = test_address(2);
+    assert_reverts('Player not initialized', || {
+        NftScavenger::request_hint(state, player2, 1);
+    });
+}
